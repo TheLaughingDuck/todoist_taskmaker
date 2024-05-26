@@ -4,29 +4,10 @@ import regex
 import itertools
 
 # For api access
-import api # custom module
+from helpers import zip_recycle, POST_tasks
 import os
 from dotenv import load_dotenv #pip install python-dotenv
 load_dotenv()
-
-### -----------VVV----------- CUSTOM FUNCTIONS -----------VVV----------- ###
-def zip_recycle(iterable):
-    """Takes an iterable, where each element is an iterable of elements.
-    The iterables are zipped (by zip), but shorter elements are recycled.
-    The longest element in fill_values will be gone through once."""
-    
-    # Regulate zip_recycle to stop once the longest element in fill_values has been passed once
-    longest = max([len(x) for x in iterable])
-    count = 0
-
-    # Unpack list of recycled iterables.
-    zipped_elements = zip(*[itertools.cycle(sublist) for sublist in iterable])
-    for element in zipped_elements:
-        yield element
-        
-        count += 1
-        if count >= longest: break
-### -----------^^^----------- CUSTOM FUNCTIONS -----------^^^----------- ###
 
 ### -----------VVV----------- GATHER TASK INFORMATION -----------VVV----------- ###
 print("-------------------------------------------------------------------")
@@ -91,5 +72,5 @@ if len(generated_tasks) > 20:
         quit()
 
 # Send task POST requests
-api.POST_tasks(access_token, generated_tasks)
+POST_tasks(access_token, generated_tasks)
 ### -----------^^^----------- CREATE TASKS -----------^^^----------- ###
