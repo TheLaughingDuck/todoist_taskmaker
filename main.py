@@ -1,9 +1,10 @@
 from tabulate import tabulate
-from todoist_api_python.api import TodoistAPI
 
-# For access token
+# For api access
+import api # custom module
 import os
 from dotenv import load_dotenv #pip install python-dotenv
+load_dotenv()
 
 # Gather necessary information
 ## access token, project
@@ -15,6 +16,7 @@ print("-------------------------------------------------------------------")
 print("\nPlease specify your personal API token. It can be found under settings in your profile.")
 print("If the access token is already specified in an .env variable; leave this empty (press ENTER).")
 access_token = input("Access token>")
+access_token = os.getenv("ACCESS_KEY") if access_token == "" else access_token
 
 print("\nPlease specify the content (task name) of your tasks.")
 print("If you want to make multiple tasks with a varying keyword, mark the location of the keyword with \"XXX\".")
@@ -44,17 +46,5 @@ if len(generated_tasks) > 20:
         print("Program exited.")
         quit()
 
-# Get access token
-if access_token == "":
-    load_dotenv()
-    api = TodoistAPI(os.getenv("ACCESS_KEY"))
-else:
-    api = TodoistAPI(access_token)
-
 # CREATE TASKS
-for task in generated_tasks:
-    try:
-        api.add_task(content=task[0], labels=task[1], priority=task[2], due_string=task[3])
-    except Exception as error:
-        print(error)
-
+api.POST_tasks(access_token, generated_tasks)
