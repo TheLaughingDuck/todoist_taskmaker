@@ -1,13 +1,6 @@
-from tabulate import tabulate
-
-import regex
-import itertools
-
-# For api access
 from helpers import zip_recycle, POST_tasks
-import os
-from dotenv import load_dotenv #pip install python-dotenv
-load_dotenv()
+from regex import finditer
+from tabulate import tabulate
 
 ### -----------VVV----------- GATHER TASK INFORMATION -----------VVV----------- ###
 print("-------------------------------------------------------------------")
@@ -18,7 +11,12 @@ print("-------------------------------------------------------------------")
 print("\nPlease specify your personal API token. It can be found under settings in your profile.")
 print("If the access token is already specified in an .env variable; leave this empty (press ENTER).")
 access_token = input("Access token>")
-access_token = os.getenv("ACCESS_KEY") if access_token == "" else access_token
+if access_token == "":
+    from os import getenv
+    from dotenv import load_dotenv #pip install python-dotenv
+    load_dotenv()
+    access_token = os.getenv("ACCESS_KEY")
+
 print("-------------------------------------------------------------------")
 
 print("\nPlease specify the content (task name) of your tasks.")
