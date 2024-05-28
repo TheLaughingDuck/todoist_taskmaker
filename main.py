@@ -15,7 +15,7 @@ if access_token == "":
     from os import getenv
     from dotenv import load_dotenv #pip install python-dotenv
     load_dotenv()
-    access_token = os.getenv("ACCESS_KEY")
+    access_token = getenv("ACCESS_KEY")
 
 print("-------------------------------------------------------------------")
 
@@ -27,7 +27,7 @@ print("-------------------------------------------------------------------")
 
 # Find 3 identical uppercase letters, like AAA, BBB, but not ABA in content.
 pattern = r'([A-Z])\1{2}'
-fill_variables = [match.group(0) for match in regex.finditer(pattern, content)]
+fill_variables = [match.group(0) for match in finditer(pattern, content)]
 
 # Print fill variable "header"
 if len(fill_variables) != 0:

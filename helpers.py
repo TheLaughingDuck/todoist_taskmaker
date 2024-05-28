@@ -1,4 +1,5 @@
 from todoist_api_python.api import TodoistAPI
+from itertools import cycle
 
 def POST_tasks(access_token, task_list):
     """Takes a todoist access token (see settings > Integrations > Developer),
@@ -26,7 +27,7 @@ def zip_recycle(iterable):
     count = 0
 
     # Unpack list of recycled iterables.
-    zipped_elements = zip(*[itertools.cycle(sublist) for sublist in iterable])
+    zipped_elements = zip(*[cycle(sublist) for sublist in iterable])
     for element in zipped_elements:
         yield element
         
