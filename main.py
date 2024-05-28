@@ -62,13 +62,13 @@ for fill_values in zip_recycle(fill_variable_values):
 formated_tasks = [[title, ", ".join(labels), prio, due_string] for title, labels, prio, due_string in generated_tasks]
 print(tabulate(formated_tasks, ["content", "label", "priority", "duestring"], tablefmt="grid"))
 
-# Run some checks before creating the tasks 
-if len(generated_tasks) > 20:
-    user_input = input("You are about to create more than 20 tasks, is that right? y/n>")
-    if user_input == "n" or user_input != "y":
-        print("Program exited.")
-        quit()
-
-# Send task POST requests
-POST_tasks(access_token, generated_tasks)
+# Let user review and accept/cancel the task creation
+print("\nPlease review the tasks in the table above before sending them to the API.")
+user_input = input("Create tasks [y/n]?>")
+if user_input == "y":
+    # Send task POST requests
+    POST_tasks(access_token, generated_tasks)
+else:
+    print("\nTask creation was cancelled by user.")
+    quit()
 ### -----------^^^----------- CREATE TASKS -----------^^^----------- ###
