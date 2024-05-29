@@ -1,62 +1,35 @@
 from helpers import zip_recycle, POST_tasks
-from regex import finditer
+from user_interaction import get_POST_information
 from tabulate import tabulate
 
-### -----------VVV----------- GATHER TASK INFORMATION -----------VVV----------- ###
 print("-------------------------------------------------------------------")
 print("Hear ye, hear ye: The todoist taskmaker program has been initiated.")
 print("Please provide the information required to create your tasks.")
 print("-------------------------------------------------------------------")
 
-print("\nPlease specify your personal API token. It can be found under settings in your profile.")
-print("If the access token is already specified in an .env variable; leave this empty (press ENTER).")
-access_token = input("Access token>")
-if access_token == "":
+# GET TASK INFORMATION FROM USER
+task_info = get_POST_information()
+
+# FILL IN missing values
+if task_info["token"] == "":
     from os import getenv
     from dotenv import load_dotenv #pip install python-dotenv
     load_dotenv()
     access_token = getenv("ACCESS_KEY")
 
-print("-------------------------------------------------------------------")
-
-print("\nPlease specify the content (task name) of your tasks.")
-print("If you want to make multiple tasks with varying keywords, mark the location of the keywords with 3 identical uppercase letter, like \"XXX\", \"YYY\", or \"ZZZ\".")
-print("You can use multiple keywords in order to cycle through different sets of values.")
-content = input("Content (Task name)>")
-print("-------------------------------------------------------------------")
-
-# Find 3 identical uppercase letters, like AAA, BBB, but not ABA in content.
-pattern = r'([A-Z])\1{2}'
-fill_variables = [match.group(0) for match in finditer(pattern, content)]
-
-# Print fill variable "header"
-if len(fill_variables) != 0:
-    print("\nPlease specify the values of the respective fill variables below.")
-    print("Separate the values with a comma, no space, for example:")
-    print("1,2,3")
-    print("Milk,Cheese,Bread")
-
-# Specify fill values for each fill variable
-fill_variable_values = []
-for variable in fill_variables:
-    print("\nPlease specify what values to iteratively replace", variable, "with.")
-    fill_variable_values.append(input("fill values>").split(","))
-    print("-------------------------------------------------------------------")
-### -----------^^^----------- GATHER TASK INFORMATION -----------^^^----------- ###
-
 ### -----------VVV----------- CREATE TASKS -----------VVV----------- ###
 # Generate list of tasks, containing their respective properties
 generated_tasks = []
-for fill_values in zip_recycle(fill_variable_values):
+for fill_values in zip_recycle(task_info["fill"].values()):
     # Make copy of content to replace variables with fill values
-    content_i = content
+    content_i = task_info["task"]
 
     # Replace each variable with corresponding value
-    for variable, value in zip(fill_variables, fill_values):
+    for variable, value in zip(task_info["fill"].keys(), fill_values):
         content_i = content_i.replace(variable, value)
     
     # Save the generated task properties
-    generated_tasks.append([content_i, ["Studying"], 1, "today"])
+    generated_tasks.append([content_i, task_info["labels"], task_info["priority"], task_info["due"]])
 
 # Print summary of tasks
 formated_tasks = [[title, ", ".join(labels), prio, due_string] for title, labels, prio, due_string in generated_tasks]
