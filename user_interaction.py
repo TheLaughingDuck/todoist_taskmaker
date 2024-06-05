@@ -1,14 +1,15 @@
 from regex import finditer
+from helpers import zip_recycle
 
-def get_POST_information():
+def make_tasks():
     """Prompts the user for information about the tasks
     """
-    task_info = {"token":None, "task":"", "labels":[], "due":"", "fill":{}, "priority":"", "subtasks":[]}
+    task_info = {"task":"", "labels":[], "due":"", "fill":{}, "priority":"", "subtasks":[]}
 
     # GET ACCESS TOKEN
     print("\nPlease specify your personal API token. It can be found under settings in your profile.")
     print("If the access token is already specified in an .env variable; leave this empty (press ENTER).")
-    task_info["token"] = input("Access token>")
+    access_token = input("Access token>")
     print("-------------------------------------------------------------------")
 
     # GET TASK NAME
@@ -88,4 +89,18 @@ def get_POST_information():
         print("-------------------------------------------------------------------")
     task_info["fill"] = fill_variables
 
-    return task_info
+    # Generate list of tasks, containing their respective properties
+    generated_tasks = []
+    for fill_values in zip_recycle(task_info["fill"].values()):
+        # Make copy of content to replace variables with fill values
+        content_i = task_info["task"]
+
+        # Replace each variable with corresponding value
+        for variable, value in zip(task_info["fill"].keys(), fill_values):
+            content_i = content_i.replace(variable, value)
+        
+        # Save the generated task properties
+        #generated_tasks.append([content_i, task_info["labels"], task_info["priority"], task_info["due"]])
+        generated_tasks.append({"task":content_i, "labels":task_info["labels"], "due":task_info["due"], "priority":task_info["priority"], "subtasks":task_info["subtasks"]})
+
+    return access_token, generated_tasks
