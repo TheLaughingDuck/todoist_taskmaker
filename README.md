@@ -1,3 +1,6 @@
+# ARCHIVED
+I did not follow through enough for this project to deserve its own repository I feel. Instead I put the files in the Small_Projects repository, and I'm archiving this repo for now.
+
 # todoist_taskmaker
 A python script for automatically creating multiple todoist tasks that follow a pattern. For example with task names such as
 
